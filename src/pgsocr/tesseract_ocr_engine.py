@@ -19,17 +19,20 @@ class TesseractOCREngine:
             if system_name == "Windows":
                 possible_tessdata_folders = [
                     Path("C:\\Program Files\\Tesseract-OCR\\tessdata"),
-                    Path("C:\\Program Files (x86)\\Tesseract-OCR\\tessdata")
+                    Path("C:\\Program Files (x86)\\Tesseract-OCR\\tessdata"),
                 ]
             elif system_name == "Linux":
                 possible_tessdata_folders = [
                     Path("/usr/share/tesseract-ocr/tessdata"),
-                    Path("/usr/share/tessdata")
+                    Path("/usr/share/tessdata"),
                 ]
 
                 # Verify if path like "/usr/share/tesseract-ocr/4.00/tessdata" exist
                 default_installation_path = Path("/usr/share/tesseract-ocr")
-                if default_installation_path.exists() and default_installation_path.is_dir():
+                if (
+                    default_installation_path.exists()
+                    and default_installation_path.is_dir()
+                ):
                     for child in default_installation_path.iterdir():
                         if not child.is_dir():
                             continue
@@ -39,7 +42,10 @@ class TesseractOCREngine:
             elif system_name == "Darwin":
                 # Verify if path like "/usr/local/Cellar/tesseract/3.05.02/share/tessdata" exist
                 default_installation_path = Path("/usr/local/Cellar/tesseract")
-                if default_installation_path.exists() and default_installation_path.is_dir():
+                if (
+                    default_installation_path.exists()
+                    and default_installation_path.is_dir()
+                ):
                     for child in default_installation_path.iterdir():
                         if not child.is_dir():
                             continue
@@ -57,7 +63,7 @@ class TesseractOCREngine:
 
             if not found_valid_tessdata_folder:
                 print(
-                    f"Invalid tessdata path specified or the folder \"{tesspath.absolute()}\" doesn't contain any .traineddata file."
+                    f'Invalid tessdata path specified or the folder "{tesspath.absolute()}" doesn\'t contain any .traineddata file.'
                     " Make sure you have set the TESSDATA_PREFIX environment variable correctly."
                 )
                 exit(1)

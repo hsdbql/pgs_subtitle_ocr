@@ -10,7 +10,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent(
             """
-            Note: Florence2 is more accurate than Tesseract but far more resource heavy and only works for English. A recent GPU with a large amount of VRAM is recommended.
+            Note: The AI models are more accurate than Tesseract but far more resource heavy. A recent GPU with a large amount of VRAM is recommended.
 
             Examples:
             # Single file
@@ -31,14 +31,14 @@ def main():
     )
     parser.add_argument(
         "-m",
-        help="Specify the OCR model to use.",
-        choices=["tesseract", "florence2"],
+        help="Specify the OCR engine to use (florence2/tesseract/paddle).",
+        choices=["tesseract", "florence2", "paddle"],
         type=str.lower,
         default="tesseract",
     )
     parser.add_argument(
         "-f",
-        help="Specify the output format",
+        help="Specify the output format (SRT or ASS).",
         choices=["srt", "ass"],
         type=str.lower,
         default="srt",
@@ -46,7 +46,7 @@ def main():
     parser.add_argument(
         "-l",
         nargs="+",
-        help="(Only if using Tesseract) Specify the list of languages to use separated by spaces.",
+        help="(Only if using Tesseract or PaddleOCR) Specify preferred languages. Usually defaults to English.",
         type=str.lower,
         default=["eng"],
     )
@@ -79,6 +79,10 @@ def main():
         from .transformer_ocr_engines import Florence2OCREngine
 
         engine = Florence2OCREngine()
+    elif args.m == "paddle":
+        from .paddle_ocr_engine import PaddleOCREngine
+
+        engine = PaddleOCREngine(langs, args.b)
     else:
         raise ValueError(f"Unknown OCR engine '{args.m}' specified.")
     print("OCR engine loaded.")
