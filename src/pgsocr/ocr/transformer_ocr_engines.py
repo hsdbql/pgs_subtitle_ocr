@@ -2,6 +2,7 @@ from PIL import Image
 from transformers import AutoProcessor, AutoModelForCausalLM
 import os
 import torch
+from pgsocr.ocr.base import OCREngine
 
 # workaround for unnecessary flash_attn requirement
 from unittest.mock import patch
@@ -15,7 +16,7 @@ def fixed_get_imports(filename: str | os.PathLike) -> list[str]:
     return imports
 
 
-class Florence2OCREngine:
+class Florence2OCREngine(OCREngine):
     def __init__(self):
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
         model_id = "microsoft/Florence-2-large-ft"

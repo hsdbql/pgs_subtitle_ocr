@@ -1,7 +1,7 @@
 import argparse
 import textwrap
 from pathlib import Path
-from pgsocr.supconvert import supconvert
+from pgsocr.converters.supconvert import supconvert
 
 
 def main():
@@ -10,13 +10,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent(
             """
-            Note: Florence2 is more accurate than Tesseract but far more resource heavy and only works for English. A recent GPU with a large amount of VRAM is recommended.
+            OCR Engines:
+            - paddleocr (default): Lightweight, supports multiple languages, good accuracy
+            - florence2: AI-based, more accurate but resource-intensive, English only, requires GPU with large VRAM
 
             Examples:
-            # Single file
-            pgsocr -i /path/to/file -o path/to/outputdir -m tesseract -l eng jpn
+            # Single file with PaddleOCR (default)
+            pgsocr -i /path/to/file -o path/to/outputdir -m paddleocr -l eng jpn
 
-            # Multiple files in a directory
+            # Multiple files in a directory with Florence2
             pgsocr -i /path/to/inputdir -o /path/to/outputdir -m florence2
         """
         ),
@@ -32,9 +34,9 @@ def main():
     parser.add_argument(
         "-m",
         help="Specify the OCR model to use.",
-        choices=["tesseract", "florence2"],
+        choices=["paddleocr", "paddle", "florence2"],
         type=str.lower,
-        default="tesseract",
+        default="paddleocr",
     )
     parser.add_argument(
         "-f",
@@ -46,14 +48,9 @@ def main():
     parser.add_argument(
         "-l",
         nargs="+",
-        help="(Only if using Tesseract) Specify the list of languages to use separated by spaces.",
+        help="Specify the list of languages to use separated by spaces (e.g., eng, jpn, chi_sim).",
         type=str.lower,
         default=["eng"],
-    )
-    parser.add_argument(
-        "-b",
-        help="(Only if using Tesseract) Specify a custom character blacklist for Tesseract. Enter an empty string to turn off the default blacklist.",
-        default="|`´®",
     )
     args = parser.parse_args()
 
@@ -71,12 +68,12 @@ def main():
     langs = args.l
 
     print("Loading OCR engine...")
-    if args.m == "tesseract":
-        from .tesseract_ocr_engine import TesseractOCREngine
+    if args.m in ["paddleocr", "paddle"]:
+        from pgsocr.ocr.paddleocr_engine import PaddleOCREngine
 
-        engine = TesseractOCREngine(langs, args.b)
+        engine = PaddleOCREngine(langs)
     elif args.m == "florence2":
-        from .transformer_ocr_engines import Florence2OCREngine
+        from pgsocr.ocr.transformer_ocr_engines import Florence2OCREngine
 
         engine = Florence2OCREngine()
     else:

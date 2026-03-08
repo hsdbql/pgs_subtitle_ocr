@@ -1,5 +1,5 @@
-from pgsocr import img_utils
-from pgsocr.pgsparser import PGStream
+from pgsocr.utils import img_utils
+from pgsocr.parsers.pgsparser import PGStream
 from tqdm import tqdm
 from typing import Optional
 
@@ -62,7 +62,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             img_obj.img.save(
                 f"{img_dump_path}/{img_obj.start_ms}-{img_obj.end_ms}_{seq_num}.png"
             )
-        text = ocr_engine.get_ocr_text(img_utils.preprocess_image(img_obj.img))
+        
+        # Wrap OCR call in try-except to handle individual image failures
+        try:
+            text = ocr_engine.get_ocr_text(img_utils.preprocess_image(img_obj.img))
+        except Exception as e:
+            # Log warning and continue processing remaining images
+            print(f"Warning: OCR failed for image at {img_obj.start_ms}ms-{img_obj.end_ms}ms: {e}")
+            text = ""
 
         if fmt == "srt":
             outfile.write(

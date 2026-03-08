@@ -2,7 +2,7 @@ import numpy as np
 import numpy.typing as npt
 from PIL import Image, ImageOps
 import warnings
-from pgsocr.pgsparser import PGStream, ObjectDefinitionSegment, PaletteDefinitionSegment, PGSImageObject
+from pgsocr.parsers.pgsparser import PGStream, ObjectDefinitionSegment, PaletteDefinitionSegment, PGSImageObject
 from typing import Generator
 
 
