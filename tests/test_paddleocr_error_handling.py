@@ -302,13 +302,11 @@ class TestImageProcessingErrorHandling:
             assert result1 == ""
             
             # Second call succeeds - reset the mock to return valid data
-            # Format: [[[[bbox_coords], (text, confidence)], ...]]
+            # Format for PaddleOCR 2.7+: [OCRResult] where OCRResult has .get() method
             mock_paddle_instance.ocr.side_effect = None
-            mock_paddle_instance.ocr.return_value = [
-                [
-                    [[[0, 0], [100, 0], [100, 50], [0, 50]], ("Success", 0.95)]
-                ]
-            ]
+            mock_ocr_result = MagicMock()
+            mock_ocr_result.get.return_value = ["Success"]
+            mock_paddle_instance.ocr.return_value = [mock_ocr_result]
             image2 = Image.new('RGB', (100, 50), color='white')
             
             result2 = engine.get_ocr_text(image2)
