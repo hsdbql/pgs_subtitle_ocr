@@ -31,7 +31,7 @@ def supconvert(
         return
 
     file_name = supfile.file_name.split(".")[0]
-    outfile = open(f"{out_path}/{file_name}.{fmt}", "w", buffering=1)
+    outfile = open(f"{out_path}/{file_name}.{fmt}", "w", buffering=1, encoding="utf-8")
     if fmt == "ass":
         outfile.write(
             f"""
