@@ -120,6 +120,7 @@ class PaddleOCREngine(OCREngine):
             print("  - Missing language models (will auto-download on first use)")
             print("  - GPU configuration issues (try CPU mode)")
             print("  - Insufficient disk space for model downloads")
+            print("  - Conflicts with other cudnn libraries (try in a clean virtual environment or pip uninstall nvidia-cudnn-cu12)")
             exit(1)
     
     def get_ocr_text(self, im: Image.Image) -> str:

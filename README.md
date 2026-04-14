@@ -2,11 +2,37 @@
 Convert Blu-Ray SUP subtitles to SRT or ASS using AI Language Models or PaddleOCR.
 
 ### Installation
-    pip install pgsocr
-    or
-    pip install pgsocr[lm] (for the AI language models)
 
-PaddleOCR is included by default and will automatically download required language models on first use.
+To avoid installing unnecessary dependencies and prevent potential conflicts (especially with strict package managers like `uv`), the CPU and GPU runtimes for PaddlePaddle have been separated. You need to specify either the `[cpu]` or `[gpu]` extra when installing.
+
+Using `pip`:
+
+    pip install "pgsocr[cpu]"
+    or
+    pip install "pgsocr[gpu]" (for GPU-accelerated PaddleOCR)
+    or
+    pip install "pgsocr[gpu,lm]" (if you want to try both)
+
+For editable installs from a local checkout:
+
+    pip install -e ".[cpu]"
+    pip install -e ".[gpu]"
+    pip install -e ".[gpu,lm]"
+
+The installation logic is as follows:
+- **CPU**: `pip install "pgsocr[cpu]"` installs the **CPU** version of PaddlePaddle.
+- **GPU**: `pip install "pgsocr[gpu]"` installs the **GPU** version explicitly.
+
+The same extras work perfectly with `uv` (recommended), for example:
+
+    uv pip install ".[cpu]"
+    uv pip install ".[gpu]"
+    uv pip install ".[gpu,lm]"
+    
+    # Or to sync the project environment:
+    uv sync --extra cpu
+    uv sync --extra gpu
+    uv sync --extra gpu --extra lm
 
 ### Usage:
 
@@ -35,13 +61,13 @@ Additional languages may be supported. Language models are automatically downloa
 
 ### OCR Engine Comparison
 
-| Feature | PaddleOCR | Florence2 |
-|---------|-----------|-----------|
-| Accuracy | Good | Excellent |
-| Speed | Fast (~500ms per image on CPU) | Slower |
-| Resource Usage | Lightweight | Heavy (requires GPU with large VRAM) |
-| Installation | Included by default | Requires [lm] extra |
-| Language Support | Multiple languages with -l flag | Automatic language detection |
+| Feature          | PaddleOCR                                   | Florence2                            |
+| ---------------- | ------------------------------------------- | ------------------------------------ |
+| Accuracy         | Very Good                                   | Excellent                            |
+| Speed            | Fast (~1s per image on CPU or ~50ms on GPU) | Slower                               |
+| Resource Usage   | Lightweight                                 | Heavy (requires GPU with large VRAM) |
+| Installation     | Included by default                         | Requires [lm] extra                  |
+| Language Support | Multiple languages with -l flag             | Automatic language detection         |
 
 Note: Florence2 is more accurate than PaddleOCR but far more resource heavy. A recent GPU with a large amount of VRAM is recommended for Florence2.
 

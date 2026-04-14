@@ -8,7 +8,6 @@ authors = [
 dependencies = [
     "pillow>=10.4.0",
     "paddleocr>=2.7.0",
-    "paddlepaddle>=2.6.0,<3.3.0",  # Pin to <3.3.0 due to oneDNN bug in 3.3.0
     "numpy>=2.0.0",
     "tqdm>=4.66.4",
 ]
@@ -16,7 +15,13 @@ requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
 
-[dependency-groups]
+[project.optional-dependencies]
+cpu = [
+    "paddlepaddle>=2.6.0,<3.3.0",
+]
+gpu = [
+    "paddlepaddle-gpu>=2.6.0,<3.3.0",
+]
 lm = [
     "torch>=2.3.1",
     "torchvision>=0.18.1",
